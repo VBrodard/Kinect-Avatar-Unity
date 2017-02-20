@@ -16,3 +16,6 @@ In this project, I will attempt to represent a body with spheres in Unity, using
 - Click "Open"
 - Click "Import" in the lower right hand corner of the "Importing Package" Dialog (which Unity will launch after step 7)
 - If you wish to see the Kinect in action there are two sample scenes available from the zip.
+
+# Sources:
+- I used some of the code on this project "Develop a game using Unity3D with Microsoft Kinect v2" : https://andreasassetti.wordpress.com/2015/11/02/develop-a-game-using-unity3d-with-microsoft-kinect-v2/
