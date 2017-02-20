@@ -4,7 +4,7 @@ In this project, I will attempt to represent a body with spheres in Unity, using
 # References:
 - For more references about the Kinect for Windows SDK 2.0, check this link : https://msdn.microsoft.com/en-us/library/dn799271.aspx
 - Here is the link for the Windows SDK 2.0 from the official Microsoft website : https://www.microsoft.com/en-us/download/details.aspx?id=44561
-- Link for Unity : https://unity3d.com/fr
+- Link for Unity : https://unity3d.com/fr (The version I'm using is 5.53.1f1)
 
 # Installing the Kinect plugin for Unity :
 - Expand the .Zip file, and move Kinect.2.0.1410.19000.UnityPackageto a well known <location>
