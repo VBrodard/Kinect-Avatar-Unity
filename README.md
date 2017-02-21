@@ -19,3 +19,4 @@ In this project, I will attempt to represent a body with spheres in Unity, using
 
 # Sources:
 - I used some of the code on this project "Develop a game using Unity3D with Microsoft Kinect v2" : https://andreasassetti.wordpress.com/2015/11/02/develop-a-game-using-unity3d-with-microsoft-kinect-v2/
+- On this website as well : https://thenappingkat.azurewebsites.net/unity-gaming-integrating-kinect-part-3/
