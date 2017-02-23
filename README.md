@@ -1,6 +1,5 @@
 # KinectAvatarForUnity
-In this project, I will attempt to represent a body with spheres in Unity, using a Kinect. All of this is made from scratch.
-
+In this project, I will attempt to represent a body with spheres in Unity, using a Kinect.
 # References:
 - For more references about the Kinect for Windows SDK 2.0, check this link : https://msdn.microsoft.com/en-us/library/dn799271.aspx
 - Here is the link for the Windows SDK 2.0 from the official Microsoft website : https://www.microsoft.com/en-us/download/details.aspx?id=44561
