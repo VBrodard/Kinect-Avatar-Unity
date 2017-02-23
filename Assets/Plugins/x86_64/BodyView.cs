@@ -9,9 +9,11 @@ public class BodyView : MonoBehaviour
     public Material BoneMaterial;
     public GameObject BodyManager;
     public GameObject Cylindre;
+    public GameObject Camera;
 
     private Dictionary<ulong, GameObject> _Bodies = new Dictionary<ulong, GameObject>();
     private BodyManager _BodyManager;
+    
     // map out all the bones by the two joints that they will be connected to
     private Dictionary<Kinect.JointType, Kinect.JointType> _BoneMap = new Dictionary<Kinect.JointType, Kinect.JointType>()
     {
@@ -49,20 +51,12 @@ public class BodyView : MonoBehaviour
         { Kinect.JointType.SpineShoulder, Kinect.JointType.Neck },
         { Kinect.JointType.Neck, Kinect.JointType.Head },
     };
-
-    // Use this for initialization
-    void Start()
-    {
-
-    }
-
     // Update is called once per frame
     void Update()
     {
         //we need to store the keys of the tracked bodies in order to generate them
         //int state = 0;
         //We check if the KinectManager has data to work with
-        int state = 0;
 
         if (BodyManager == null)
         {
@@ -176,6 +170,12 @@ public class BodyView : MonoBehaviour
             else
             {
                 lr.enabled = false;
+            }
+            //move the main camera on the head
+            if (jt == Kinect.JointType.Head)
+            {
+                print(jointObj.localPosition.x);
+                Camera.transform.position = new Vector3(jointObj.localPosition.x, jointObj.localPosition.y, jointObj.localPosition.z);
             }
         }
     }
