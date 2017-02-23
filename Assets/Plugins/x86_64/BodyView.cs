@@ -8,7 +8,6 @@ public class BodyView : MonoBehaviour
 
     public Material BoneMaterial;
     public GameObject BodyManager;
-    public GameObject Cylindre;
     public GameObject Camera;
 
     private Dictionary<ulong, GameObject> _Bodies = new Dictionary<ulong, GameObject>();
@@ -131,12 +130,10 @@ public class BodyView : MonoBehaviour
         for (Kinect.JointType jt = Kinect.JointType.SpineBase; jt <= Kinect.JointType.ThumbRight; jt++)
         {
             GameObject jointObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            LineRenderer lr = jointObj.AddComponent<LineRenderer>();
+            /*LineRenderer lr = jointObj.AddComponent<LineRenderer>();
             lr.SetVertexCount(2);
             lr.material = BoneMaterial;
-            lr.SetWidth(0.5f, 0.5f);
-
-            //Instantiate(Cylindre, lr.transform);
+            lr.SetWidth(0.5f, 0.5f);*/
 
             jointObj.transform.localScale = new Vector3(1f, 1f, 1f);
             jointObj.name = jt.ToString();
@@ -160,7 +157,7 @@ public class BodyView : MonoBehaviour
             Transform jointObj = bodyObject.transform.FindChild(jt.ToString());
             jointObj.localPosition = GetVector3FromJoint(sourceJoint);
 
-            LineRenderer lr = jointObj.GetComponent<LineRenderer>();
+            /*LineRenderer lr = jointObj.GetComponent<LineRenderer>();
             if (targetJoint.HasValue)
             {
                 lr.SetPosition(0, jointObj.localPosition);
@@ -170,7 +167,7 @@ public class BodyView : MonoBehaviour
             else
             {
                 lr.enabled = false;
-            }
+            }*/
             //move the main camera on the head
             if (jt == Kinect.JointType.Head)
             {
