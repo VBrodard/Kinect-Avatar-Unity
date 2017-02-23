@@ -50,11 +50,10 @@ public class BodyView : MonoBehaviour
         { Kinect.JointType.SpineShoulder, Kinect.JointType.Neck },
         { Kinect.JointType.Neck, Kinect.JointType.Head },
     };
-    // Update is called once per frame
+    // Update is called on each frames
     void Update()
     {
         //we need to store the keys of the tracked bodies in order to generate them
-        //int state = 0;
         //We check if the KinectManager has data to work with
 
         if (BodyManager == null)
@@ -86,8 +85,15 @@ public class BodyView : MonoBehaviour
 
             if (body.IsTracked)
             {
-                //We add the ID of the tracked body in the tracked body list
-                trackedIds.Add(body.TrackingId);
+                trackedIds.Add(body.TrackingId);  //We add the ID of all the tracked body from the the current frame in the tracked body list
+
+                if (!_Bodies.ContainsKey(body.TrackingId))
+                {
+                    //if the body isn't already in the _Bodies dictionnary, we create a new body object and add it to the dictionnary
+                    _Bodies[body.TrackingId] = CreateBodyObject(body.TrackingId);
+                }
+                //otherwise the body exists already and we have to refresh it
+                RefreshBodyObject(body, _Bodies[body.TrackingId]);
             }
         }
 
@@ -96,40 +102,23 @@ public class BodyView : MonoBehaviour
         // First delete untracked bodies
         foreach (ulong trackingId in knownIds)
         {
-            if (!trackedIds.Contains(trackingId))
-            {
+            if (!trackedIds.Contains(trackingId))   //we check every Ids in knownIds and check if the body are still tracked. If it isn't the case we destroy the body
+            {                                       //by updating the _Bodies dictionnary
                 Destroy(_Bodies[trackingId]);
                 _Bodies.Remove(trackingId);
             }
         }
-
-        ///////////////////////////////////////////////////////////////////////////////////////
-
-        foreach (var body in data)
-        {
-            if (body == null)
-            {
-                continue;
-            }
-
-            if (body.IsTracked)
-            {
-                if (!_Bodies.ContainsKey(body.TrackingId))
-                {
-                    _Bodies[body.TrackingId] = CreateBodyObject(body.TrackingId);
-                }
-
-                RefreshBodyObject(body, _Bodies[body.TrackingId]);
-            }
-        }
     }
+
     private GameObject CreateBodyObject(ulong id)
     {
-        GameObject body = new GameObject("Body:" + id);
+        GameObject body = new GameObject("Body:" + id); //We create a new body object named by the id
 
+        //Joint hierarchy flows from the center of the body to the extremities. It will go on each joint
+        //The value of SpineBase = 0 and the value of the ThumbRight = 24, the maximum 
         for (Kinect.JointType jt = Kinect.JointType.SpineBase; jt <= Kinect.JointType.ThumbRight; jt++)
         {
-            GameObject jointObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            GameObject jointObj = GameObject.CreatePrimitive(PrimitiveType.Sphere); //for each joint we create a gameObject with a sphere
             /*LineRenderer lr = jointObj.AddComponent<LineRenderer>();
             lr.SetVertexCount(2);
             lr.material = BoneMaterial;
@@ -137,25 +126,29 @@ public class BodyView : MonoBehaviour
 
             jointObj.transform.localScale = new Vector3(1f, 1f, 1f);
             jointObj.name = jt.ToString();
-            jointObj.transform.parent = body.transform;
+            jointObj.transform.parent = body.transform; //we attach the joint to the body parent
         }
 
         return body;
     }
+
     private void RefreshBodyObject(Kinect.Body body, GameObject bodyObject)
     {
         for (Kinect.JointType jt = Kinect.JointType.SpineBase; jt <= Kinect.JointType.ThumbRight; jt++)
         {
             Kinect.Joint sourceJoint = body.Joints[jt];
-            Kinect.Joint? targetJoint = null;
-
+            Kinect.Joint? targetJoint = null;   //it will store the joint parent object of the current joint, if it doesn't have any parent -> = null
+            
             if (_BoneMap.ContainsKey(jt))
             {
-                targetJoint = body.Joints[_BoneMap[jt]];
+                targetJoint = body.Joints[_BoneMap[jt]]; //parent of the analyzed joint
+
+                //{ Kinect.JointType.FootLeft, Kinect.JointType.AnkleLeft }, AnkleLeft joint will be the targetJoint of FootLeft joint
             }
 
-            Transform jointObj = bodyObject.transform.FindChild(jt.ToString());
-            jointObj.localPosition = GetVector3FromJoint(sourceJoint);
+            Transform jointObj = bodyObject.transform.FindChild(jt.ToString()); //we store the position, rotation and scale of the current jt
+            jointObj.localPosition = GetVector3FromJoint(sourceJoint); //set the local position of each joint, we "scale" the distance of everything by 10
+                                                                       //otherwise we would be represented as a heap of spheres
 
             /*LineRenderer lr = jointObj.GetComponent<LineRenderer>();
             if (targetJoint.HasValue)
@@ -171,15 +164,17 @@ public class BodyView : MonoBehaviour
             //move the main camera on the head
             if (jt == Kinect.JointType.Head)
             {
-                print(jointObj.localPosition.x);
+                //print(jointObj.localPosition.x);
                 Camera.transform.position = new Vector3(jointObj.localPosition.x, jointObj.localPosition.y, jointObj.localPosition.z);
             }
         }
     }
+
     private static Vector3 GetVector3FromJoint(Kinect.Joint joint)
     {
         return new Vector3(joint.Position.X * 10, joint.Position.Y * 10, joint.Position.Z * 10);
     }
+
     private static Color GetColorForState(Kinect.TrackingState state)
     {
         switch (state)
