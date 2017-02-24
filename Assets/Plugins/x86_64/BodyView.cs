@@ -90,7 +90,7 @@ public class BodyView : MonoBehaviour
                 if (!_Bodies.ContainsKey(body.TrackingId))
                 {
                     //if the body isn't already in the _Bodies dictionnary, we create a new body object and add it to the dictionnary
-                    _Bodies[body.TrackingId] = CreateBodyObject(body.TrackingId);
+                    _Bodies[body.TrackingId] = CreateBodyObject(body.TrackingId, body);
                 }
                 //otherwise the body exists already and we have to refresh it
                 RefreshBodyObject(body, _Bodies[body.TrackingId]);
@@ -110,7 +110,7 @@ public class BodyView : MonoBehaviour
         }
     }
 
-    private GameObject CreateBodyObject(ulong id)
+    private GameObject CreateBodyObject(ulong id, Kinect.Body bodyKinect)
     {
         GameObject body = new GameObject("Body:" + id); //We create a new body object named by the id
 
@@ -119,10 +119,21 @@ public class BodyView : MonoBehaviour
         for (Kinect.JointType jt = Kinect.JointType.SpineBase; jt <= Kinect.JointType.ThumbRight; jt++)
         {
             GameObject jointObj = GameObject.CreatePrimitive(PrimitiveType.Sphere); //for each joint we create a gameObject with a sphere
-            /*LineRenderer lr = jointObj.AddComponent<LineRenderer>();
-            lr.SetVertexCount(2);
-            lr.material = BoneMaterial;
-            lr.SetWidth(0.5f, 0.5f);*/
+
+            Kinect.Joint? targetJoint = null;
+
+            if (_BoneMap.ContainsKey(jt))
+            {
+                targetJoint = bodyKinect.Joints[_BoneMap[jt]]; //parent of the analyzed joint
+                //{ Kinect.JointType.FootLeft, Kinect.JointType.AnkleLeft }, AnkleLeft joint will be the targetJoint of FootLeft joint
+            }
+
+            if (targetJoint != null) //we add a cylinder only to the joints that have a parent 
+            {
+                GameObject cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                cylinder.name = jt.ToString() + " bone";
+                cylinder.transform.parent = jointObj.transform; //we attach the cylinder to the jointObj parent
+            }
 
             jointObj.transform.localScale = new Vector3(1f, 1f, 1f);
             jointObj.name = jt.ToString();
@@ -137,34 +148,32 @@ public class BodyView : MonoBehaviour
         for (Kinect.JointType jt = Kinect.JointType.SpineBase; jt <= Kinect.JointType.ThumbRight; jt++)
         {
             Kinect.Joint sourceJoint = body.Joints[jt];
-            Kinect.Joint? targetJoint = null;   //it will store the joint parent object of the current joint, if it doesn't have any parent -> = null
-            
-            if (_BoneMap.ContainsKey(jt))
-            {
-                targetJoint = body.Joints[_BoneMap[jt]]; //parent of the analyzed joint
-
-                //{ Kinect.JointType.FootLeft, Kinect.JointType.AnkleLeft }, AnkleLeft joint will be the targetJoint of FootLeft joint
-            }
-
-            Transform jointObj = bodyObject.transform.FindChild(jt.ToString()); //we store the position, rotation and scale of the current jt
+               //it will store the joint parent object of the current joint, if it doesn't have any parent -> = null
+      
+            Transform jointObj = bodyObject.transform.FindChild(jt.ToString()); //we store the position of the current jt
             jointObj.localPosition = GetVector3FromJoint(sourceJoint); //set the local position of each joint, we "scale" the distance of everything by 10
                                                                        //otherwise we would be represented as a heap of spheres
 
-            /*LineRenderer lr = jointObj.GetComponent<LineRenderer>();
-            if (targetJoint.HasValue)
+            //we habe to check if the current joint has another joint after
+            if (_BoneMap.ContainsKey(jt))
             {
-                lr.SetPosition(0, jointObj.localPosition);
-                lr.SetPosition(1, GetVector3FromJoint(targetJoint.Value));
-                lr.SetColors(GetColorForState(sourceJoint.TrackingState), GetColorForState(targetJoint.Value.TrackingState));
+                Kinect.Joint targetJoint = body.Joints[_BoneMap[jt]]; //parent of the analyzed joint
+                                                                      //{ Kinect.JointType.FootLeft, Kinect.JointType.AnkleLeft }, AnkleLeft joint will be the targetJoint of FootLeft joint
+                Transform bone = jointObj.transform.FindChild(jt.ToString() + " bone");
+                Transform targetJointObj = bodyObject.transform.FindChild(body.Joints[_BoneMap[jt]].ToString());
+                bone.transform.position = new Vector3(jointObj.localPosition.x, jointObj.localPosition.y, jointObj.localPosition.z); //place the cylinder on their joint parent
+
+                float Angle = Vector3.Angle(jointObj.eulerAngles, targetJointObj.eulerAngles);
+                //bone.transform.eulerAngles = Angle;
+                //Debug.Log(Angle);
+                //bone.transform.LookAt(new Vector3(targetJoint.Value.Position.X, targetJoint.Value.Position.Y, targetJoint.Value.Position.Z));
+                //bone.transform.position = new Vector3((sourceJoint.Position.X - targetJoint.Value.Position.X) * 10, (sourceJoint.Position.Y - targetJoint.Value.Position.Y) * 10, (sourceJoint.Position.Z - targetJoint.Value.Position.Z) * 10);
+                //bone.Rotate(new Vector3(Angle, 0, 0));
             }
-            else
-            {
-                lr.enabled = false;
-            }*/
+
             //move the main camera on the head
             if (jt == Kinect.JointType.Head)
             {
-                //print(jointObj.localPosition.x);
                 Camera.transform.position = new Vector3(jointObj.localPosition.x, jointObj.localPosition.y, jointObj.localPosition.z);
             }
         }
