@@ -147,8 +147,7 @@ public class BodyView : MonoBehaviour
     {
         for (Kinect.JointType jt = Kinect.JointType.SpineBase; jt <= Kinect.JointType.ThumbRight; jt++)
         {
-            Kinect.Joint sourceJoint = body.Joints[jt];
-               //it will store the joint parent object of the current joint, if it doesn't have any parent -> = null
+            Kinect.Joint sourceJoint = body.Joints[jt]; //we load the data of the kinect joint
       
             Transform jointObj = bodyObject.transform.FindChild(jt.ToString()); //we store the position of the current jt
             jointObj.localPosition = GetVector3FromJoint(sourceJoint); //set the local position of each joint, we "scale" the distance of everything by 10
@@ -159,11 +158,14 @@ public class BodyView : MonoBehaviour
             {
                 Kinect.Joint targetJoint = body.Joints[_BoneMap[jt]]; //parent of the analyzed joint
                                                                       //{ Kinect.JointType.FootLeft, Kinect.JointType.AnkleLeft }, AnkleLeft joint will be the targetJoint of FootLeft joint
-                Transform bone = jointObj.transform.FindChild(jt.ToString() + " bone");
-                Transform targetJointObj = bodyObject.transform.FindChild(body.Joints[_BoneMap[jt]].ToString());
-                bone.transform.position = new Vector3(jointObj.localPosition.x, jointObj.localPosition.y, jointObj.localPosition.z); //place the cylinder on their joint parent
 
-                float Angle = Vector3.Angle(jointObj.eulerAngles, targetJointObj.eulerAngles);
+                Transform targetJointObj = bodyObject.transform.FindChild(body.Joints[_BoneMap[jt]].JointType.ToString());
+                Transform bone = bodyObject.transform.FindChild(jt.ToString()).FindChild(jt.ToString() + " bone");
+                
+                bone.position = new Vector3((targetJointObj.position.x - jointObj.position.x) / 2 + jointObj.position.x , (targetJointObj.position.y - jointObj.position.y) / 2 + jointObj.position.y, (targetJointObj.position.z - jointObj.position.z) / 2 + jointObj.position.z); //move the cylinder on their joint parent
+
+                bone.localScale = new Vector3(0.3f, 1, 0.3f);
+                // float Angle = Vector3.Angle(jointObj.eulerAngles, targetJointObj.eulerAngles);
                 //bone.transform.eulerAngles = Angle;
                 //Debug.Log(Angle);
                 //bone.transform.LookAt(new Vector3(targetJoint.Value.Position.X, targetJoint.Value.Position.Y, targetJoint.Value.Position.Z));
