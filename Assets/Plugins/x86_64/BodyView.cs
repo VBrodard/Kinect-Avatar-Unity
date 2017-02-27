@@ -119,6 +119,7 @@ public class BodyView : MonoBehaviour
         for (Kinect.JointType jt = Kinect.JointType.SpineBase; jt <= Kinect.JointType.ThumbRight; jt++)
         {
             GameObject jointObj = GameObject.CreatePrimitive(PrimitiveType.Sphere); //for each joint we create a gameObject with a sphere
+            jointObj.GetComponent< Collider>().isTrigger = true;
 
             Kinect.Joint? targetJoint = null;
 
@@ -131,6 +132,7 @@ public class BodyView : MonoBehaviour
             if (targetJoint != null) //we add a cylinder only to the joints that have a parent 
             {
                 GameObject cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                cylinder.GetComponent<Collider>().isTrigger = true;
                 cylinder.name = jt.ToString() + " bone";
                 cylinder.transform.parent = jointObj.transform; //we attach the cylinder to the jointObj parent
             }
@@ -157,20 +159,25 @@ public class BodyView : MonoBehaviour
             if (_BoneMap.ContainsKey(jt))
             {
                 Kinect.Joint targetJoint = body.Joints[_BoneMap[jt]]; //parent of the analyzed joint
-                                                                      //{ Kinect.JointType.FootLeft, Kinect.JointType.AnkleLeft }, AnkleLeft joint will be the targetJoint of FootLeft joint
+                //{ Kinect.JointType.FootLeft, Kinect.JointType.AnkleLeft }, AnkleLeft joint will be the targetJoint of FootLeft joint
 
                 Transform targetJointObj = bodyObject.transform.FindChild(body.Joints[_BoneMap[jt]].JointType.ToString());
                 Transform bone = bodyObject.transform.FindChild(jt.ToString()).FindChild(jt.ToString() + " bone");
-                
-                bone.position = new Vector3((targetJointObj.position.x - jointObj.position.x) / 2 + jointObj.position.x , (targetJointObj.position.y - jointObj.position.y) / 2 + jointObj.position.y, (targetJointObj.position.z - jointObj.position.z) / 2 + jointObj.position.z); //move the cylinder on their joint parent
 
-                bone.localScale = new Vector3(0.3f, 1, 0.3f);
-                // float Angle = Vector3.Angle(jointObj.eulerAngles, targetJointObj.eulerAngles);
-                //bone.transform.eulerAngles = Angle;
-                //Debug.Log(Angle);
-                //bone.transform.LookAt(new Vector3(targetJoint.Value.Position.X, targetJoint.Value.Position.Y, targetJoint.Value.Position.Z));
-                //bone.transform.position = new Vector3((sourceJoint.Position.X - targetJoint.Value.Position.X) * 10, (sourceJoint.Position.Y - targetJoint.Value.Position.Y) * 10, (sourceJoint.Position.Z - targetJoint.Value.Position.Z) * 10);
-                //bone.Rotate(new Vector3(Angle, 0, 0));
+                //move the cylinder between the sourceJoint and the targetJoint
+                bone.position = new Vector3((targetJointObj.position.x - jointObj.position.x) / 2 + jointObj.position.x , (targetJointObj.position.y - jointObj.position.y) / 2 + jointObj.position.y, (targetJointObj.position.z - jointObj.position.z) / 2 + jointObj.position.z);
+                float distance = Vector3.Distance(targetJointObj.position, jointObj.position);
+
+                float AngleX = (Mathf.PI - Mathf.Atan(Mathf.Abs((float)targetJointObj.position.z - (float)jointObj.position.z) / Mathf.Abs((float)targetJointObj.position.y - (float)jointObj.position.y))) * 180 / Mathf.PI;
+                //float AngleZ = (Mathf.Atan(Mathf.Abs((float)targetJointObj.position.x - (float)jointObj.position.x) / Mathf.Abs((float)targetJointObj.position.z - (float)jointObj.position.z))) * 180 / Mathf.PI;
+                float AngleZ = (Mathf.Atan(Mathf.Abs((float)targetJointObj.position.x - (float)bone.position.x) / Mathf.Abs((float)targetJointObj.position.y - (float)bone.position.y))) * 180 / Mathf.PI;
+ 
+                //Debug.Log("X rotation " + RotX);
+                Vector3 temp = new Vector3(AngleX, 0f, 0f);
+                //Vector3 temp = new Vector3(90f, 0f, 0f);
+                bone.rotation = Quaternion.Euler(temp);
+
+                bone.localScale = new Vector3(0.3f, distance * 0.45f, 0.3f);
             }
 
             //move the main camera on the head
