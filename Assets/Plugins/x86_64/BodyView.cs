@@ -168,12 +168,40 @@ public class BodyView : MonoBehaviour
                 bone.position = new Vector3((targetJointObj.position.x - jointObj.position.x) / 2 + jointObj.position.x , (targetJointObj.position.y - jointObj.position.y) / 2 + jointObj.position.y, (targetJointObj.position.z - jointObj.position.z) / 2 + jointObj.position.z);
                 float distance = Vector3.Distance(targetJointObj.position, jointObj.position);
 
-                float AngleX = (Mathf.PI - Mathf.Atan(Mathf.Abs((float)targetJointObj.position.z - (float)jointObj.position.z) / Mathf.Abs((float)targetJointObj.position.y - (float)jointObj.position.y))) * 180 / Mathf.PI;
-                //float AngleZ = (Mathf.Atan(Mathf.Abs((float)targetJointObj.position.x - (float)jointObj.position.x) / Mathf.Abs((float)targetJointObj.position.z - (float)jointObj.position.z))) * 180 / Mathf.PI;
-                float AngleZ = (Mathf.Atan(Mathf.Abs((float)targetJointObj.position.x - (float)bone.position.x) / Mathf.Abs((float)targetJointObj.position.y - (float)bone.position.y))) * 180 / Mathf.PI;
- 
+                float AngleX = 0f;
+                if (targetJointObj.position.y > jointObj.position.y && targetJointObj.position.z > jointObj.position.z)
+                {
+                    AngleX = (Mathf.Atan(Mathf.Abs((float)targetJointObj.position.z - (float)jointObj.position.z) / Mathf.Abs((float)targetJointObj.position.y - (float)jointObj.position.y))) * 180 / Mathf.PI - 180;
+                }else if (jointObj.position.z <= targetJointObj.position.z && jointObj.position.y > targetJointObj.position.y)
+                {
+                    AngleX = (Mathf.Atan(Mathf.Abs((float)targetJointObj.position.z - (float)jointObj.position.z) / Mathf.Abs((float)targetJointObj.position.y - (float)jointObj.position.y))) * 180 / Mathf.PI * -1;
+                }else if (jointObj.position.z > targetJointObj.position.z && jointObj.position.y > targetJointObj.position.y)
+                {
+                    AngleX = (Mathf.Atan(Mathf.Abs((float)targetJointObj.position.z - (float)jointObj.position.z) / Mathf.Abs((float)targetJointObj.position.y - (float)jointObj.position.y))) * 180 / Mathf.PI;
+                }else if (jointObj.position.z > targetJointObj.position.z && jointObj.position.y < targetJointObj.position.y)
+                {
+                    AngleX = (Mathf.Atan(Mathf.Abs((float)targetJointObj.position.z - (float)jointObj.position.z) / Mathf.Abs((float)targetJointObj.position.y - (float)jointObj.position.y))) * 180 / Mathf.PI * -1 - 180;
+                }
+                
+                //float AngleY = ((Mathf.Atan(Mathf.Abs((float)targetJointObj.position.z - (float)jointObj.position.z) / Mathf.Abs((float)targetJointObj.position.y - (float)jointObj.position.y))) * 180 / Mathf.PI);
+                
+                //Angle Z has a problem when the sourceJoint is under the targetJoint vertically
+                float AngleZ = 0f;
+                if (jointObj.position.x < targetJointObj.position.x && jointObj.position.y < targetJointObj.position.y)
+                {
+                    AngleZ = ((Mathf.Atan(Mathf.Abs((float)(targetJointObj.position.x) - (float)(jointObj.position.x)) / Mathf.Abs((float)(targetJointObj.position.y) - (float)(jointObj.position.y)))) * 180 / Mathf.PI) * -1 - 180;
+                }else if (jointObj.position.x >= targetJointObj.position.x && jointObj.position.y < targetJointObj.position.y)
+                {
+                    AngleZ = (Mathf.Atan(Mathf.Abs((float)(targetJointObj.position.x) - (float)(jointObj.position.x)) / Mathf.Abs((float)(targetJointObj.position.y) - (float)(jointObj.position.y)))) * 180 / Mathf.PI - 180;
+                }else if (jointObj.position.x < targetJointObj.position.x && jointObj.position.y >= targetJointObj.position.y)
+                {
+                    AngleZ = (Mathf.Atan(Mathf.Abs((float)(targetJointObj.position.x) - (float)(jointObj.position.x)) / Mathf.Abs((float)(targetJointObj.position.y) - (float)(jointObj.position.y)))) * 180 / Mathf.PI;
+                }else
+                {
+                    AngleZ = ((Mathf.Atan(Mathf.Abs((float)(jointObj.position.x) - (float)(targetJointObj.position.x)) / Mathf.Abs((float)(jointObj.position.y) - (float)(targetJointObj.position.y)))) * 180 / Mathf.PI) * -1;
+                }
                 //Debug.Log("X rotation " + RotX);
-                Vector3 temp = new Vector3(AngleX, 0f, 0f);
+                Vector3 temp = new Vector3(AngleX, 0f, AngleZ);
                 //Vector3 temp = new Vector3(90f, 0f, 0f);
                 bone.rotation = Quaternion.Euler(temp);
 
