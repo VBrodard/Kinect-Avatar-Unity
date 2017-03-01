@@ -155,7 +155,7 @@ public class BodyView : MonoBehaviour
             jointObj.localPosition = GetVector3FromJoint(sourceJoint); //set the local position of each joint, we "scale" the distance of everything by 10
                                                                        //otherwise we would be represented as a heap of spheres
 
-            //we habe to check if the current joint has another joint after
+            //we have to check if the current joint has another joint after
             if (_BoneMap.ContainsKey(jt))
             {
                 Kinect.Joint targetJoint = body.Joints[_BoneMap[jt]]; //parent of the analyzed joint
@@ -168,6 +168,12 @@ public class BodyView : MonoBehaviour
                 bone.position = new Vector3((targetJointObj.position.x - jointObj.position.x) / 2 + jointObj.position.x , (targetJointObj.position.y - jointObj.position.y) / 2 + jointObj.position.y, (targetJointObj.position.z - jointObj.position.z) / 2 + jointObj.position.z);
                 float distance = Vector3.Distance(targetJointObj.position, jointObj.position);
 
+                jointObj.LookAt(targetJointObj);    //position the direction of the bones to point at their joint target
+                Vector3 rot = jointObj.rotation.eulerAngles;
+                rot = new Vector3(rot.x + 90, rot.y, rot.z); //we have to add 90 degrees to the x axis of the bones
+                jointObj.rotation = Quaternion.Euler(rot);
+                
+                /*
                 float AngleX = 0f;
                 if (targetJointObj.position.y > jointObj.position.y && targetJointObj.position.z > jointObj.position.z)
                 {
@@ -183,9 +189,8 @@ public class BodyView : MonoBehaviour
                     AngleX = (Mathf.Atan(Mathf.Abs((float)targetJointObj.position.z - (float)jointObj.position.z) / Mathf.Abs((float)targetJointObj.position.y - (float)jointObj.position.y))) * 180 / Mathf.PI * -1 - 180;
                 }
                 
-                //float AngleY = ((Mathf.Atan(Mathf.Abs((float)targetJointObj.position.z - (float)jointObj.position.z) / Mathf.Abs((float)targetJointObj.position.y - (float)jointObj.position.y))) * 180 / Mathf.PI);
-                
                 //Angle Z has a problem when the sourceJoint is under the targetJoint vertically
+
                 float AngleZ = 0f;
                 if (jointObj.position.x < targetJointObj.position.x && jointObj.position.y < targetJointObj.position.y)
                 {
@@ -200,10 +205,9 @@ public class BodyView : MonoBehaviour
                 {
                     AngleZ = ((Mathf.Atan(Mathf.Abs((float)(jointObj.position.x) - (float)(targetJointObj.position.x)) / Mathf.Abs((float)(jointObj.position.y) - (float)(targetJointObj.position.y)))) * 180 / Mathf.PI) * -1;
                 }
-                //Debug.Log("X rotation " + RotX);
                 Vector3 temp = new Vector3(AngleX, 0f, AngleZ);
-                //Vector3 temp = new Vector3(90f, 0f, 0f);
                 bone.rotation = Quaternion.Euler(temp);
+                */
 
                 bone.localScale = new Vector3(0.3f, distance * 0.45f, 0.3f);
             }
