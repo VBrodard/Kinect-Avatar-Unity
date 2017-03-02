@@ -46,8 +46,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Plugins\x86_64\BodyManager.cs" />
-     <Compile Include="Assets\Plugins\x86_64\BodyView.cs" />
      <Compile Include="Assets\Standard Assets\CameraIntrinsics.cs" />
      <Compile Include="Assets\Standard Assets\CollectionMap.cs" />
      <Compile Include="Assets\Standard Assets\EventPump.cs" />
@@ -133,6 +131,10 @@
      <Compile Include="Assets\Standard Assets\Windows\Kinect\TrackingConfidence.cs" />
      <Compile Include="Assets\Standard Assets\Windows\Kinect\TrackingState.cs" />
      <Compile Include="Assets\Standard Assets\Windows\Kinect\Vector4.cs" />
+     <None Include="Assets\OvrvisionPro\Resources\Shaders\ovChromaticMask.shader" />
+     <None Include="Assets\OvrvisionPro\Resources\Shaders\ovTexture.shader" />
+     <None Include="Assets\OvrvisionPro\Resources\Shaders\ovHandMaskRev.shader" />
+     <None Include="Assets\OvrvisionPro\Resources\Shaders\ovShadowShader.shader" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

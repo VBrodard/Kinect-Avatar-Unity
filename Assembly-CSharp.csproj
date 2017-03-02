@@ -6,7 +6,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{CB224EEB-6B52-F04A-48AE-95B1D4AEE097}</ProjectGuid>
+    <ProjectGuid>{0B402AF0-BB06-FAC3-FADD-A3C04720BF9E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -46,7 +46,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\KinectManager.cs" />
+     <Compile Include="Assets\OvrvisionPro\Demos\CamImageCube.cs" />
+     <Compile Include="Assets\OvrvisionPro\Scripts\COvrvisionUnity.cs" />
+     <Compile Include="Assets\OvrvisionPro\Scripts\Ovrvision.cs" />
+     <Compile Include="Assets\OvrvisionPro\Scripts\OvrvisionHandTracker.cs" />
+     <Compile Include="Assets\OvrvisionPro\Scripts\OvrvisionTracker.cs" />
+     <Compile Include="Assets\Scripts\BodyManager.cs" />
+     <Compile Include="Assets\Scripts\BodyView.cs" />
+     <None Include="Assets\OvrvisionPro\Resources\Shaders\ovChromaticMask.shader" />
+     <None Include="Assets\OvrvisionPro\Resources\Shaders\ovTexture.shader" />
+     <None Include="Assets\OvrvisionPro\Resources\Shaders\ovHandMaskRev.shader" />
+     <None Include="Assets\OvrvisionPro\Resources\Shaders\ovShadowShader.shader" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
@@ -68,7 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
-      <Project>{A7F512CE-4BAC-D70E-73A5-8BA1D795FA17}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
+      <Project>{F0023925-ECB7-4E1A-FAA4-8127E07D5182}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

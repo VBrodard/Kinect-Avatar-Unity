@@ -47,6 +47,10 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Standard Assets\Editor\KinectCopyPluginDataHelper.cs" />
+     <None Include="Assets\OvrvisionPro\Resources\Shaders\ovChromaticMask.shader" />
+     <None Include="Assets\OvrvisionPro\Resources\Shaders\ovTexture.shader" />
+     <None Include="Assets\OvrvisionPro\Resources\Shaders\ovHandMaskRev.shader" />
+     <None Include="Assets\OvrvisionPro\Resources\Shaders\ovShadowShader.shader" />
  <Reference Include="UnityEditor.Advertisements">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Advertisements/Editor/UnityEditor.Advertisements.dll</HintPath>
  </Reference>
